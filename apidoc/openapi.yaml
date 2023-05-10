@@ -7,7 +7,6 @@ servers:
   - url: 'http://localhost:8082/api'
     description: 'Entorno local desarrollo'
 paths:
-
   /usuarios:
     get:
       security: 
@@ -37,12 +36,35 @@ paths:
         - usuarios
       summary: crear usuarios
       description: Este método crea usuarios
+      responses:
+        200:
+          description: operacion correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        500:
+          description: error de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+
+  /usuarios/{id}:
+    put:
       parameters:
-      - name: usuario 
-        in: query
-        description: 'Objeto JSON con datos de usuario'
-        schema:
-          $ref: '#/components/schemas/Usuario'
+          - $ref: '#/components/parameters/idParam'
+      security: 
+      - bearerAuth: []
+      tags:
+        - usuarios
+      summary: crear usuarios
+      description: Este método actualiza a un usuario
       responses:
         200:
           description: operacion correcta
@@ -63,28 +85,20 @@ paths:
               $ref: '#/components/schemas/Usuario'
 
 
-
-
 components:
 
+  
+
   parameters:
-    sortParam:
-      name: sort
-      in: query
-      description: " ordenacion"
-      example: "+fecha -nombre"
+    idParam:
+      required: true
+      name: id
+      in: path
+      description: " identificador usuario"
+      example: 10
       schema:
-        type: string
-        
-        
-    limitParam:
-      name: limit
-      in: query
-      description: "número de resultados a obtener"
-      example: 50
-      schema:
-        type: integer    
-    
+        type: integer
+        minimum: 1
     
     skipParam:
       name: skip
@@ -142,13 +156,6 @@ components:
         type:
           type: string
           description: Tipo de error
-          
-          
-          
-          
-          
-          
-          
         message:
           type: string
           description: Mensaje de error  
